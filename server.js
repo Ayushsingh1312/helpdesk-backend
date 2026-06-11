@@ -11,6 +11,9 @@ app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 
+const authRoutes = require('./src/routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 app.get('/api/health', (req, res) =>{
     res.json({status: 'HelpDesk API is running'});
 });
