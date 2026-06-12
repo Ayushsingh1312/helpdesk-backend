@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/generateToken');
+const { get } = require('mongoose');
 
 // @desc  Register new user
 // @route POST /api/auth/register
@@ -73,4 +74,12 @@ const loginUser = async (req, res) => {
     }
 };
 
-module.exports = {registerUser, loginUser};
+
+// @desc   Get logged in user profile
+// @route  GET /api/auth/me
+// @access Private
+const getMe = async (req, res) =>{
+    res.status(200).json(req.user);
+};
+
+module.exports = {registerUser, loginUser, getMe};
