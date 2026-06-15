@@ -27,21 +27,62 @@ const createTicket = async (req, res) => {
 // Logic: Admin = all tickets, User = their tickets
 const getTickets = async (req, res) => {
   try {
-    let tickets;
+    // Query parameters
+    const {status, priority, category, search, page, limit} = req.query;
 
-    if (req.user.role === "admin") {
-      // Show all tickets to admin, also populate user info
-      tickets = await Ticket.find()
-        .populate("createdBy", "name email")
-        .sort({ createdAt: -1 });
-    } else {
-      // For normal user
-      tickets = await Ticket.find({ createdBy: req.user._id }).sort({
-        createdAt: -1,
-      });
+    // Base filter
+    let filter = {};
+    if(req.user.role !== 'admin'){
+        filter.createdBy = req.user._id;
     }
 
-    res.status(200).json(tickets);
+    // Status filter
+    if(status){
+        filter.status = status;
+    }
+
+    // Priority filter
+    if(priority){
+        filter.priority = priority;
+    }
+
+    // Category filter
+    if(category){
+        filter.category = category;
+    }
+
+    // Search  - find text in title or description
+    if(search){
+        filter.$or = [
+            {title: {$regex: search, $options: 'i'}},
+            {description: {$regex: search, $options: 'i'}},
+        ];
+    }
+
+    // Pagination setup
+    const pageNumber = parseInt(page) || 1;
+    const limitNumber = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * limitNumber;
+
+    // Total count
+    const total = await Ticket.countDocuments(filter);
+
+    // Fetch actual tickets
+    const tickets = await Ticket.find(filter)
+        .populate('createdBy', 'name email')
+        .sort({createdAt: -1})
+        .skip(skip)
+        .limit(limitNumber);
+
+    res.status(200).json({
+        tickets,
+        pagination: {
+            total,
+            page: pageNumber,
+            pages: Math.ceil(total / limitNumber),
+            limit: limitNumber,
+        },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
