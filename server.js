@@ -17,6 +17,9 @@ app.use('/api/auth', authRoutes);
 const ticketRoutes = require('./src/routes/ticketRoutes');
 app.use('/api/tickets', ticketRoutes);
 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.get('/api/health', (req, res) =>{
     res.json({status: 'HelpDesk API is running'});
 });

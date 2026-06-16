@@ -21,6 +21,10 @@ const ticketSchema = new mongoose.Schema(
             enum: ['low', 'medium', 'high'],
             default: 'medium',
         },
+        attachment:{
+            type: String,
+            default: null,
+        },
         status:{
             type: String,
             enum: ['open', 'in-progress', 'resolved'],

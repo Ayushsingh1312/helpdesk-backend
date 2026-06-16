@@ -13,6 +13,7 @@ const createTicket = async (req, res) => {
       category,
       priority,
       createdBy: req.user._id,
+      attachment: req.file ? req.file.path : null,
     });
 
     res.status(201).json(ticket);

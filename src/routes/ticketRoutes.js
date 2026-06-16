@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../config/multerConfig');
 const {
     createTicket,
     getTickets,
@@ -13,7 +14,7 @@ router.use(protect);
 
 router.route('/')
     .get(getTickets)
-    .post(createTicket);
+    .post(upload.single('attachment'), createTicket);
 
 router.route('/:id')
     .get(getTicketById)
