@@ -20,6 +20,9 @@ app.use('/api/tickets', ticketRoutes);
 const commentRoutes = require('./src/routes/commentRoutes');
 app.use('/api/tickets', commentRoutes);
 
+const dashboardRoutes = require('./src/routes/dashboardRoutes');
+app.use('/api/dashboard', dashboardRoutes);
+
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
