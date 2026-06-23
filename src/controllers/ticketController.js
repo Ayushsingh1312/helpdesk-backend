@@ -80,7 +80,7 @@ const getTickets = async (req, res) => {
         pagination: {
             total,
             page: pageNumber,
-            pages: Math.ceil(total / limitNumber),
+            pages: Math.max(1, Math.ceil(total / limitNumber)),
             limit: limitNumber,
         },
     });
